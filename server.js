@@ -71,15 +71,23 @@ app.put('/markUnComplete', (request, response) => {
         upsert: false
     })
     .then(result => {
-        console.log('Marked Complete')
-        response.json('Marked Complete')
+        console.log('Marked uncomplete')
+        response.json('Marked uncomplete')
     })
     .catch(error => console.error(error))
 
 })
 
 app.delete('/deleteItem', (request, response) => {
-    db.collection('todos').deleteOne({thing: request.body.itemFromJS})
+    db.collection('todos').updateOne({thing: request.body.itemFromJS},{
+        $set: {
+            completed: false,
+            deleted: true
+          }
+    },{
+        sort: {_id: -1},
+        upsert: false
+    })
     .then(result => {
         console.log('Todo Deleted')
         response.json('Todo Deleted')
